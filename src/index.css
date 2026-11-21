@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Custom luxury scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FAF3E0;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D47FA6;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #581845;
+  }
+}
+
+/* RTL Helpers */
+[dir="rtl"] {
+  font-family: 'Tajawal', 'Cairo', sans-serif;
+}
+
+[dir="ltr"] {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-luxury-title {
+  font-family: 'Playfair Display', 'Amiri', serif;
+}
+
+/* Luxury visual accents */
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 50%, #B89324 100%);
+}
+
+.bg-rose-gradient {
+  background: linear-gradient(135deg, #581845 0%, #6C224B 50%, #D47FA6 100%);
+}
+
+.bg-soft-gradient {
+  background: linear-gradient(180deg, #FDFBF7 0%, #FAF3E0 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #E5C158 50%, #937418 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-rose-gradient {
+  background: linear-gradient(135deg, #581845 0%, #6C224B 60%, #D47FA6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   Arabic typography safety (dots & diacritics)
+   Gradient text is painted into a box whose height is driven by the LINE BOX.
+   Tailwind's `text-5xl`..`text-9xl` scale ships `line-height: 1`, so that box is
+   shorter than the Arabic ink extent and the dots of ي / ب / ت / ج (and any
+   diacritic) get clipped away. Enlarging the line box + adding bottom padding
+   restores them.
+--------------------------------------------------------------------------- */
+.text-rose-gradient,
+.text-gold-gradient {
+  display: inline-block;
+  line-height: 1.4;
+  padding-bottom: 0.1em;
+}
+
+/* Arabic needs a taller box so the dots below the baseline are never cropped. */
+[lang="ar"] .text-rose-gradient,
+[lang="ar"] .text-gold-gradient {
+  line-height: 1.7;
+  padding-bottom: 0.16em;
+}
+
+/* Arabic script must never be letter-spaced: it breaks the cursive joining. */
+[lang="ar"] .hero-headline {
+  letter-spacing: normal !important;
+  line-height: 1.7 !important;
+  padding-bottom: 0.3rem;
+  overflow: visible;
+}
+
+/* ---------------------------------------------------------------------------
+   Full-bleed hero
+   The veil opacity is controlled by --hero-veil-opacity: raise it for more
+   contrast, lower it to let more of the photo through. The gradient is denser
+   behind the centred copy and fades towards the edges.
+--------------------------------------------------------------------------- */
+.hero-veil {
+  --hero-veil-opacity: 0.45;
+  background: radial-gradient(
+    ellipse 115% 95% at 50% 50%,
+    rgba(42, 9, 32, calc(var(--hero-veil-opacity) + 0.15)) 0%,
+    rgba(88, 24, 69, var(--hero-veil-opacity)) 52%,
+    rgba(88, 24, 69, calc(var(--hero-veil-opacity) - 0.14)) 100%
+  );
+}
+
+.hero-title {
+  max-width: 60rem;
+  font-size: clamp(1.85rem, 8vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  text-shadow: 0 2px 16px rgba(42, 9, 32, 0.55), 0 1px 3px rgba(42, 9, 32, 0.5);
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: clamp(2.5rem, 4.6vw, 4.25rem);
+  }
+}
+
+.hero-gold {
+  color: #F2D77C;
+}
+
+.hero-copy-shadow {
+  text-shadow: 0 1px 10px rgba(42, 9, 32, 0.6), 0 1px 2px rgba(42, 9, 32, 0.5);
+}
+
+/* Headings and Arabic display text: room for descenders + dots, never clipped. */
+[lang="ar"] h1,
+[lang="ar"] h2,
+[lang="ar"] h3,
+[lang="ar"] h4,
+[lang="ar"] .font-arabic {
+  line-height: 1.7;
+}
+
+.glass-card {
+  background: rgba(253, 251, 247, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(232, 160, 191, 0.25);
+}
+
+.glass-card-dark {
+  background: rgba(88, 24, 69, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}

@@ -1,0 +1,119 @@
+// Schéma Prisma — provider MySQL (XAMPP local)
+// Les tables sont créées UNIQUEMENT via Prisma (migrate / db push). Jamais à la main.
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/client"
+  binaryTargets = ["native", "debian-openssl-1.0.x", "debian-openssl-3.0.x", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
+  engineType    = "library"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Cycle de vie d'une réservation
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+// Catégorie de soins (Épilation, Manucure, Pédicure, Coiffure, Massage...)
+model Category {
+  id            Int       @id @default(autoincrement())
+  slug          String    @unique @db.VarChar(64)
+  nameFr        String    @db.VarChar(120)
+  nameAr        String    @db.VarChar(120)
+  icon          String    @default("Sparkles") @db.VarChar(32)
+  descriptionFr String?   @db.Text
+  descriptionAr String?   @db.Text
+  order         Int       @default(0)
+  services      Service[]
+
+  @@index([order])
+  @@map("category")
+}
+
+// Prestation avec son tarif
+model Service {
+  id            Int           @id @default(autoincrement())
+  slug          String        @unique @db.VarChar(80)
+  categoryId    Int
+  category      Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  nameFr        String        @db.VarChar(160)
+  nameAr        String        @db.VarChar(160)
+  descriptionFr String?       @db.Text
+  descriptionAr String?       @db.Text
+  price         Int
+  priceMax      Int?
+  priceFrom     Boolean       @default(false)
+  priceNote     String        @default("DH") @db.VarChar(40)
+  duration      String        @default("30 min") @db.VarChar(20)
+  popular       Boolean       @default(false)
+  badge         String?       @db.VarChar(80)
+  available     Boolean       @default(true)
+  active        Boolean       @default(true)
+  order         Int           @default(0)
+  bookings      Booking[]
+  bookingItems  BookingItem[]
+
+  @@index([categoryId])
+  @@index([order])
+  @@map("service")
+}
+
+// Réservation : serviceId = prestation principale, les autres dans BookingItem
+model Booking {
+  id               Int           @id @default(autoincrement())
+  ref              String        @unique @db.VarChar(16)
+  clientName       String        @db.VarChar(120)
+  phone            String        @db.VarChar(24)
+  serviceId        Int
+  service          Service       @relation(fields: [serviceId], references: [id])
+  date             DateTime      @db.Date
+  time             String        @db.VarChar(5)
+  status           BookingStatus @default(PENDING)
+  notes            String?       @db.Text
+  extraOptionSlug  String?       @db.VarChar(40)
+  extraOptionName  String?       @db.VarChar(160)
+  extraOptionPrice Int           @default(0)
+  totalPrice       Int           @default(0)
+  durationMinutes  Int           @default(30)
+  whatsappLink     String?       @db.Text
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  items            BookingItem[]
+
+  @@index([date, time])
+  @@index([status])
+  @@index([createdAt])
+  @@map("booking")
+}
+
+// Lignes de réservation : snapshot du nom et du prix au moment de la réservation
+model BookingItem {
+  id        Int     @id @default(autoincrement())
+  bookingId Int
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  serviceId Int
+  service   Service @relation(fields: [serviceId], references: [id])
+  nameFr    String  @db.VarChar(160)
+  nameAr    String  @db.VarChar(160)
+  price     Int
+  duration  String  @default("30 min") @db.VarChar(20)
+
+  @@index([bookingId])
+  @@map("bookingitem")
+}
+
+// Compte de l'équipe du salon (bcrypt)
+model Admin {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(160)
+  passwordHash String   @db.VarChar(255)
+  createdAt    DateTime @default(now())
+
+  @@map("admin")
+}

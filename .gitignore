@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+server/node_modules/
+deploy/server/node_modules/
+
+# Build outputs
+dist/
+server/dist/
+deploy/dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+server/.env
+server/.env.local
+server/.env.*.local
+deploy/.env
+deploy/.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Testing
+coverage/
+
+# Prisma
+prisma/migrations/
+server/prisma/migrations/
+deploy/server/prisma/migrations/
+
+# Deployment
+deploy/
+*.zip
+
+# Uploads
+uploads/
+server/uploads/
+public/uploads/
+
+# Test files
+test-api.js
+test-api.mjs
