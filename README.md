@@ -98,7 +98,7 @@ L'application allie une esthétique féminine et luxueuse (teintes Rose Gold, Pr
 
 1. Ouvrez votre terminal dans le répertoire du projet :
 ```bash
-cd "C:\Users\ordin\.gemini\antigravity\scratch\center-beaute-loudaya"
+cd "C:\Users\ordin\center-beaute-loudaya"
 ```
 
 2. Installez les dépendances (si ce n'est pas déjà fait) :
